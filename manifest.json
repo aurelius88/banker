@@ -1,14 +1,16 @@
 {
     "files": {
         "index.js": "a9a49763145aa4fc7452f26e39000dbf4aee684548f02006936310ffb9d2081a",
-        "module.json": "d8826dc700521a04d0fceee84169776d53a849849022fd1462b57bada43d62ac",
+        "module.json": "ee6579c0961ddafd87a5e9070433e248c25db112b820f1aee33b7f3180442cb3",
         "protocols/defs/C_GET_WARE_ITEM.4.def": "05951c4d419f18c0d4950de02cbfcd94a0d91cac17e1d959ae626b7993ab6224",
+        "protocols/defs/C_PUT_WARE_ITEM.3.def": "7a5061b340e77ab56502fdeed1c1a4e503bdb9aef114201eb25f0925671d1f7e",
+        "protocols/defs/S_VIEW_WARE_EX.2.def": "a7455a7d7421f2d53d0f6ec64f5403f1b7f03816dca77735d5fe67ef8ccb391e",
         "protocols/map/protocol.343506.map": "2d72eaa9dd3bae6170cc3ba889886f71ff1eda7070cbb7cf831990d194f129ce",
         "protocols/map/protocol.366221.map": "0ffafd28da97724d3883188e6f30f9c24bedafe5c974be215358d0b87ad69144",
         "protocols/map/protocol.366222.map": "ec233ec0fde5fed47cb751fc445c5b315a6ea6b8672525fec2dc79208d7b8d26",
         "protocols/map/protocol.366225.map": "d325ad9cf6040e99a0b579ebd60ca94451a3bc628baeb70ac3850a0eb3ae7f2f",
         "protocols/map/protocol.366226.map": "12f1974f80877e425f8354c0671383c5850c8c5a9be09e9c188bb045c243c208",
-        "protocols/map/protocol.368189.map": "c59a88b0aa9dc54a22a6bf609305c63a3b8e9044c1a231d559548a559c44d435",
+        "protocols/map/protocol.368189.map": "227cba354e28065d46cd50ff005434829c90c76c995da3f851181f3f51f8a3e4",
         "settings.js": "4fcd95c167de185b4550ddf5d04ff078aae12604c601279721ab7506415134d7"
     },
     "defs": {
