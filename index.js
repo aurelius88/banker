@@ -51,17 +51,17 @@ module.exports = function Banker(mod) {
     }
   });
 
-  mod.hook('S_VIEW_WARE_EX', 1, event => {
+  mod.hook('S_VIEW_WARE_EX', 2, event => {
     if (!mod.game.me.is(event.gameId))
         return;
-    
-    if (event.type == BANK_TYPE) {
+
+    if (event.container == BANK_TYPE) {
       currentContract = BANK_CONTRACT;
       bankInventory = event;
       if (onNextOffset) onNextOffset(event);
     }
   });
-  mod.hook('C_GET_WARE_ITEM', 3, event => {
+  mod.hook('C_GET_WARE_ITEM', 4, event => {
     tryBlacklistNext(event, false);
   });
   mod.hook('C_PUT_WARE_ITEM', 3, event => {
@@ -78,7 +78,7 @@ module.exports = function Banker(mod) {
       msg('Human mode ' + (mod.settings.human ? 'enabled' : 'disabled'));
     },
     tab() {
-      if (checkDisabled()) return; 
+      if (checkDisabled()) return;
       //force deposit tab
       if (checkBankOpen()) {
         msg('Depositing items in this tab');
@@ -158,7 +158,7 @@ module.exports = function Banker(mod) {
           }
           break;
         case 'r':
-        case 'remove':            
+        case 'remove':
           if (args.length == 1) {
             if (checkDisabled()) return;
             blacklistMode = blacklistMode ? BlacklistModes.NONE : BlacklistModes.REMOVE;
@@ -242,7 +242,7 @@ module.exports = function Banker(mod) {
             return;
           if (!blacklist.has(bagItems[aIdx].id))
             depositItem(bagItems[aIdx], bankInventory.offset);
-  
+
           aIdx++;
           bIdx++;
 
@@ -271,16 +271,15 @@ module.exports = function Banker(mod) {
   function depositItem(bagItem, offset) {
     mod.send('C_PUT_WARE_ITEM', 3, {
       gameId: mod.game.me.gameId,
-      type: BANK_TYPE,
-      page: offset,
+      container: BANK_TYPE,
+      offset: offset,
       money: 0,
-      pocket: 0,
-      pocket: bagItem.pocket,
-      invenPos: bagItem.slot,
+      fromPocket: bagItem.pocket,
+      fromSlot: bagItem.slot,
       id: bagItem.id,
       dbid: bagItem.dbid,
       amount: bagItem.amount,
-      bankPos: offset
+      toSlot: offset
     });
   }
 
@@ -296,7 +295,7 @@ module.exports = function Banker(mod) {
       onNextOffset = false;
       callback(event);
     };
-    
+
     setTimeout(() => {
       if (!bankLoaded)
         msg('Failed to load next bank page.', ERROR);
@@ -334,7 +333,7 @@ module.exports = function Banker(mod) {
           missing.push(name);
         }
       }
-      
+
       if (missing.length) {
         let errorText = missing.join(', ') + ' are missing in the protocol map. Install missing protocols before using banker.';
         msg(errorText, ERROR);
@@ -353,12 +352,12 @@ module.exports = function Banker(mod) {
       return 50 + Math.floor(Math.random() * 100);
     }
   }
-  
+
   function gaussianRand() {
     let rand = 0;
     for (var i = 0; i < 6; i += 1) {
       rand += Math.random();
-    }  
+    }
     return rand / 6;
   }
 
@@ -371,6 +370,6 @@ module.exports = function Banker(mod) {
     if (color !== undefined)
       mod.command.message(`<font color="${color}"> ${text}</font>`);
     else
-      mod.command.message(` ${text}`); 
+      mod.command.message(` ${text}`);
   }
 };

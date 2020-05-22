@@ -1,0 +1,14 @@
+# majorPatchVersion >=93
+
+int32   count     # unknown counter
+int32   unk1      # ever slightly changing number
+uint64  gameId
+int32   container # 0 = Legacy Bank (4 tabs), 1 = Bank, 3 = Guild Bank, 9 = Pet, 12 = Wardrobe
+int32   offset
+uint64  money
+int32   fromSlot  # bank slot
+uint64  dbid
+int32   id
+int32   amount
+int32   toPocket  # -1 = No pocket specified, 0 = Inventory, 1 = Pocket 1,...
+int32   toSlot    # inventory slot: -1 = No slot specified, 0 = First slot,...

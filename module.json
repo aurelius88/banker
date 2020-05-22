@@ -1,6 +1,8 @@
 {
-    "disableAutoUpdate": false,
-    "author": "tera-tools",
+    "name": "banker",
+    "description": "Deposit items faster",
+    "author": "aurelius88 / tera-tools",
+    "version": "1.0.0",
     "options": {
         "niceName": "Banker",
         "guiName": "Banker",
@@ -11,12 +13,10 @@
         "settingsMigrator": "settings.js",
         "settingsAutosaveOnClose": true
     },
-    "supportUrl": "https://github.com/tera-tools/banker",
-    "servers": ["https://raw.githubusercontent.com/tera-tools/banker/master/"],
-    "name": "banker",
-    "description": "Deposit items faster",
+    "supportUrl": "https://github.com/aurelius88/banker",
+    "servers": ["https://raw.githubusercontent.com/aurelius88/banker/master/"],
     "packets": {
-        "C_GET_WARE_ITEM": 3,
+        "C_GET_WARE_ITEM": 4,
         "C_PUT_WARE_ITEM": 3,
         "C_VIEW_WARE": 2,
         "S_CANCEL_CONTRACT": 1,

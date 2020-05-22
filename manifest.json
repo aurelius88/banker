@@ -1,23 +1,22 @@
 {
     "files": {
-        "index.js": "6f6cbc1d70a2bdd8fc1bf524ba78f5aa85f3035d9901c5d632245d6249fcf79d",
-        "module.json": "86081f82a709abff9519b2b26aeb0d1bcc0f45032cb5e6220851ba434b97e5ad",
-        "protocols/defs/C_GET_WARE_ITEM.3.def": "8a57dab07d79628bdf0d88f6dfa35302d26037941bf7f16afe8d3f164d43dde7",
-        "protocols/defs/C_PUT_WARE_ITEM.3.def": "4607d4e9ee6425d1813898d516e823033d857c210382fda5c48e2b1e983cba96",
-        "protocols/defs/S_VIEW_WARE_EX.1.def": "61eb75559653cae40917db5c1475f43312d37c0a1c54338b306ff22fdce9e164",
-        "protocols/map/protocol.343506.map": "3be042692ca746e0eb1f1a8e0eec6145aa28a83e4a1e9000ead696526e65e665",
-        "protocols/map/protocol.366221.map": "d16c6928d682c6be789e64a11bc53475301f7eeaa27dc663f267cd7f9e2f7a45",
-        "protocols/map/protocol.366222.map": "1baf81b9f9df2cd41234fdf93f03a334dbbc2712f8f31af288b2781d05a9716c",
-        "protocols/map/protocol.366225.map": "67645caff57e34cef29e8bd4142ff40dc5ca45d1be128b44bc09be4c1616552f",
-        "protocols/map/protocol.366226.map": "61c009cdda25ddad4b05620d559eeb2ef43acf6b9663851f794a5fb34aab288b",
-        "settings.js": "74c01c33452fcd41275dbb232c3e431eb1d0c0fa912330cced537d9e43ce1ce3"
+        "index.js": "a9a49763145aa4fc7452f26e39000dbf4aee684548f02006936310ffb9d2081a",
+        "module.json": "d8826dc700521a04d0fceee84169776d53a849849022fd1462b57bada43d62ac",
+        "protocols/defs/C_GET_WARE_ITEM.4.def": "05951c4d419f18c0d4950de02cbfcd94a0d91cac17e1d959ae626b7993ab6224",
+        "protocols/map/protocol.343506.map": "2d72eaa9dd3bae6170cc3ba889886f71ff1eda7070cbb7cf831990d194f129ce",
+        "protocols/map/protocol.366221.map": "0ffafd28da97724d3883188e6f30f9c24bedafe5c974be215358d0b87ad69144",
+        "protocols/map/protocol.366222.map": "ec233ec0fde5fed47cb751fc445c5b315a6ea6b8672525fec2dc79208d7b8d26",
+        "protocols/map/protocol.366225.map": "d325ad9cf6040e99a0b579ebd60ca94451a3bc628baeb70ac3850a0eb3ae7f2f",
+        "protocols/map/protocol.366226.map": "12f1974f80877e425f8354c0671383c5850c8c5a9be09e9c188bb045c243c208",
+        "protocols/map/protocol.368189.map": "c59a88b0aa9dc54a22a6bf609305c63a3b8e9044c1a231d559548a559c44d435",
+        "settings.js": "4fcd95c167de185b4550ddf5d04ff078aae12604c601279721ab7506415134d7"
     },
     "defs": {
-        "C_GET_WARE_ITEM": 3,
+        "C_GET_WARE_ITEM": 4,
         "C_PUT_WARE_ITEM": 3,
         "C_VIEW_WARE": 2,
         "S_CANCEL_CONTRACT": 1,
         "S_REQUEST_CONTRACT": 1,
-        "S_VIEW_WARE_EX": 1
+        "S_VIEW_WARE_EX": 2
     }
 }
