@@ -29,6 +29,8 @@ module.exports = function Banker(mod) {
   });
 
   let disabled;
+  let lastOffset;
+  let deposited = false;
   let bankInventory;
   let bankOffsetStart;
   let currentContract;
@@ -61,6 +63,8 @@ module.exports = function Banker(mod) {
     if (mod.game.me.is(event.senderId)) {
       currentContract = null;
       currentBankTypeId = null;
+      lastOffset = null;
+      deposited = false;
     }
   });
 
@@ -70,6 +74,15 @@ module.exports = function Banker(mod) {
 
     currentBankTypeId = event.container;
     bankInventory = event;
+
+    if (mod.settings.auto  && blacklistMode == BlacklistModes.NONE) {
+        if(mod.settings.tab) {
+          if(lastOffset !== event.offset) deposit();
+        } else {
+          if(!deposited) deposit();
+          deposited = true;
+        }
+    }
     if(currentContract == BANK_CONTRACT
       && mod.settings.depositIn[IdBankTypes[currentBankTypeId]]
       && onNextOffset) onNextOffset(event);
@@ -95,6 +108,11 @@ module.exports = function Banker(mod) {
     guild() { toggleBankInto("guild"); },
     wardrobe() { toggleBankInto("wardrobe"); },
     settings: printSettings,
+    auto() {
+      mod.settings.auto = !mod.settings.auto;
+      saveConfig();
+      msg('Auto mode ' + (mod.settings.auto ? 'enabled' : 'disabled'));
+    },
     human() {
       mod.settings.human = !mod.settings.human;
       saveConfig();
@@ -132,16 +150,20 @@ module.exports = function Banker(mod) {
       if (checkDisabled()) return;
       //deposit based on settings
       if (checkBankOpen()) {
-        blacklistMode = BlacklistModes.NONE;
-        msg('Depositing items in ' + (mod.settings.tab ? 'this tab' : 'all tabs'));
-        if (mod.settings.tab) {
-          autoDeposit(false);
-        } else {
-          depositAllTabs();
-        }
+        deposit();
       }
     }
   });
+
+  function deposit() {
+    blacklistMode = BlacklistModes.NONE;
+    msg('Depositing items in ' + (mod.settings.tab ? 'this tab' : 'all tabs'));
+    if (mod.settings.tab) {
+      autoDeposit(false);
+    } else {
+      depositAllTabs();
+    }
+  }
 
   function argsError() {
     msg('Invalid arguments.', ERROR);
@@ -267,12 +289,14 @@ module.exports = function Banker(mod) {
       blacklistMode = BlacklistModes.NONE;
   }
 
-  function checkBankOpen() {
+  function checkBankOpen(ignoreOutput) {
     if (currentContract != BANK_CONTRACT) {
-      msg('Bank must be open to use banker module.', ERROR);
+      if(!ignoreOutput)
+        msg('Bank must be open to use banker module.', ERROR);
       return false;
     } else if (!mod.settings.depositIn[IdBankTypes[currentBankTypeId]]) {
-      msg('Not allowed to bank here. Check "bank settings" if you did not expected this.', ERROR);
+      if(!ignoreOutput)
+        msg('Not allowed to bank here. Check "bank settings" if you did not expected this.', ERROR);
       return false;
     }
     return true;

@@ -13,6 +13,7 @@ const DefaultSettings = {
     wardrobe: false,
     guild: false,
   },
+  auto: false,
   blacklist: [],
 };
 
