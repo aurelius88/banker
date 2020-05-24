@@ -1,7 +1,7 @@
 {
     "files": {
         "index.js": "4ea1260081d4ad961eeb1acd5e317d295780f4ab69760631460a1b3c52012d3d",
-        "module.json": "e0e5292f089dd1f4cbc449d87574679c9c8f076511819edef428114a888070d9",
+        "module.json": "cd89eadd4e314ec24104e4c8b7edb11d95220e77ffaf07ed9f8ac7697366fcc4",
         "protocols/defs/C_GET_WARE_ITEM.4.def": "4324341c604321dac93f773c119a6417237f0c2da3761a40f546986c965acdb4",
         "protocols/defs/C_PUT_WARE_ITEM.3.def": "5276f07ac6cc9e7cecc0d0824bcc3894dd064f7c5f01040c44f97427a435acd0",
         "protocols/defs/S_VIEW_WARE_EX.2.def": "a7455a7d7421f2d53d0f6ec64f5403f1b7f03816dca77735d5fe67ef8ccb391e",
@@ -11,7 +11,7 @@
         "protocols/map/protocol.366225.map": "67645caff57e34cef29e8bd4142ff40dc5ca45d1be128b44bc09be4c1616552f",
         "protocols/map/protocol.366226.map": "61c009cdda25ddad4b05620d559eeb2ef43acf6b9663851f794a5fb34aab288b",
         "protocols/map/protocol.368189.map": "227cba354e28065d46cd50ff005434829c90c76c995da3f851181f3f51f8a3e4",
-        "settings.js": "74c01c33452fcd41275dbb232c3e431eb1d0c0fa912330cced537d9e43ce1ce3"
+        "settings.js": "08c5a5d55c2cc341544c280c48e771474acc5219e87ada1bbc5d5a52c28690d3"
     },
     "defs": {
         "C_GET_WARE_ITEM": 4,
