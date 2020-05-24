@@ -226,7 +226,7 @@ module.exports = function Banker(mod) {
   }
 
   function autoDeposit(allTabs) {
-    let bagItems = mod.game.inventory.bagItems.slice(0);
+    let bagItems = mod.game.inventory.bagOrPocketItems.slice(0);
     let bankItems = bankInventory.items.slice(0);
 
     bagItems.sort((a, b) => a.id - b.id);
@@ -284,7 +284,7 @@ module.exports = function Banker(mod) {
   }
 
   function getNextOffset(bank) {
-    if (bank.offset + BANK_PAGE_SLOTS < bank.slots)
+    if (bank.offset + BANK_PAGE_SLOTS < bank.numUnlockedSlots)
       return bank.offset + BANK_PAGE_SLOTS;
   }
 
