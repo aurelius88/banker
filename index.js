@@ -6,7 +6,10 @@ module.exports = function Banker(mod) {
   const INV_SLOTS = 120; // aka pocket 0
   const POCKET_SLOTS = 80;
   const PAGE_CHANGE_TIMEOUT = 1000;
-  const ERROR = '#ff0000';
+  const COLOR_ERROR = '#dd0000';
+  const COLOR_COMMAND = '#08ffda';
+  const COLOR_SUB_COMMAND = '#ff7a00';
+  const COLOR_VALUE = '#59f051';
 
   const PROTOCOLS = [
     'C_GET_WARE_ITEM',
@@ -76,12 +79,12 @@ module.exports = function Banker(mod) {
     bankInventory = event;
 
     if (mod.settings.auto  && blacklistMode == BlacklistModes.NONE) {
-        if(mod.settings.tab) {
-          if(lastOffset !== event.offset) deposit();
-        } else {
-          if(!deposited) deposit();
-          deposited = true;
-        }
+      if(mod.settings.tab) {
+        if(lastOffset !== event.offset) deposit();
+      } else {
+        if(!deposited) deposit();
+        deposited = true;
+      }
     }
     if(currentContract == BANK_CONTRACT
       && mod.settings.depositIn[IdBankTypes[currentBankTypeId]]
@@ -111,18 +114,18 @@ module.exports = function Banker(mod) {
     auto() {
       mod.settings.auto = !mod.settings.auto;
       saveConfig();
-      msg('Auto mode ' + (mod.settings.auto ? 'enabled' : 'disabled'));
+      sendMsg(`Auto mode ${msg(mod.settings.auto ? 'enabled' : 'disabled',COLOR_VALUE)}`);
     },
     human() {
       mod.settings.human = !mod.settings.human;
       saveConfig();
-      msg(`Switched to ${mod.settings.human? '"human-like (slow)"' : '"fast"'} depositing speed`);
+      sendMsg(msg(`Switched to ${mod.settings.human? '"human-like (slow)"' : '"fast"'} depositing speed`));
     },
     tab() {
       if (checkDisabled()) return;
       //force deposit tab
       if (checkBankOpen()) {
-        msg('Depositing items in this tab');
+        sendMsg('Depositing items in this tab');
         autoDeposit(false);
       }
     },
@@ -130,7 +133,7 @@ module.exports = function Banker(mod) {
       if (checkDisabled()) return;
       //force deposit all
       if (checkBankOpen()) {
-        msg('Depositing items in all tabs');
+        sendMsg('Depositing items in all tabs');
         depositAllTabs();
       }
     },
@@ -138,13 +141,53 @@ module.exports = function Banker(mod) {
       //update tab mode
       mod.settings.tab = !mod.settings.tab;
       saveConfig();
-      msg(`Switched to ${mod.settings.tab ? '"single tab"' : '"all tabs"'} mode`);
+      sendMsg(msg(`Switched to ${mod.settings.tab ? '"single tab"' : '"all tabs"'} mode`));
     },
     blacklist(...args) {
       processBlacklistCommand(args);
     },
     bl(...args){
       processBlacklistCommand(args);
+    },
+    help(){
+      let cmds = {
+        "auto": "Toggle auto depositing when opening bank.",
+        "human": "Toggle human-like delays (Default is off)",
+        "mode": `Switch between ${msg("single tab",COLOR_VALUE)} mode and ${msg("all tabs",COLOR_VALUE)} mode.`,
+        "tab": "Deposit in current tab.",
+        "all": "Deposit in all tabs.",
+        "bl | blacklist" : {
+          "": "Manipulates the blacklist. Sub commands are listed below:",
+          "a | add": "Adds the next banked/retrieved item to blacklist.",
+          "r | remove": "Removes the next banked/retrieved item from blacklist.",
+          "mode": "Enables/Disables blacklist mode. Adds retrieved items to blacklist and removes banked items from blacklist.",
+          "clear": "Empty blacklist",
+          "list": "List current blacklisted items."
+        },
+        settings: "List current settings.",
+        personal: "Toggle allow depositing in personal bank (Default is enabled)",
+        pet: "Toggle allow depositing in pet bank (Default is enabled)",
+        guild: "Toggle allow depositing in guild bank (Default is disabled)",
+        wardrobe: "Toggle allow depositing in wardrobe bank (Default is disabled)",
+        bag: "Toggle allow depositing from (main) bag (Default is enabled)",
+        pockets: "Toggle allow depositing from pockets (Default is disabled)",
+      };
+      sendMsg(`Usage: ${msg("bank",COLOR_COMMAND)} to deposit items to all tabs or current tab.`);
+      let msgs = [];
+      msgs.push(`Usage: ${msg("bank command",COLOR_COMMAND)}`);
+      msgs.push(`${msg("command", COLOR_COMMAND)} is one of the commands below:`);
+      for(let cmd in cmds) {
+        if(typeof cmds[cmd] == 'string')
+          msgs.push(msgForCmd(cmd, cmds[cmd]));
+        else {
+          msgs.push(`   ${msg(cmd, COLOR_COMMAND)} ${msg("&lt;sub-command&gt;", COLOR_SUB_COMMAND)}: ${cmds[cmd][""]}`);
+          for(let subCmd in cmds[cmd]) {
+            if(subCmd.length) msgs.push(`   ${msgForCmd(subCmd, cmds[cmd][subCmd], COLOR_SUB_COMMAND)}`);
+          }
+        }
+      }
+      sendMsg(msgs.join("\n"));
+
     },
     $none() {
       if (checkDisabled()) return;
@@ -155,9 +198,13 @@ module.exports = function Banker(mod) {
     }
   });
 
+  function msgForCmd(cmd, message, color) {
+    return `   ${msg(cmd, color ? color : COLOR_COMMAND)}: ${message}`;
+  }
+
   function deposit() {
     blacklistMode = BlacklistModes.NONE;
-    msg('Depositing items in ' + (mod.settings.tab ? 'this tab' : 'all tabs'));
+    sendMsg(`Depositing items in ${mod.settings.tab ? 'this tab' : 'all tabs'}`);
     if (mod.settings.tab) {
       autoDeposit(false);
     } else {
@@ -166,7 +213,8 @@ module.exports = function Banker(mod) {
   }
 
   function argsError() {
-    msg('Invalid arguments.', ERROR);
+    sendMsg(msg(`Invalid arguments."`, COLOR_ERROR));
+    sendHelpInfoMsg();
   }
 
   function toggleBankInto(type) {
@@ -203,7 +251,7 @@ module.exports = function Banker(mod) {
 
   function checkDisabled() {
     if (disabled)
-      msg('Banker is disabled. Add the required protocol maps to the tera-data folder.', ERROR);
+      sendMsg(msg('Banker is disabled. Add the required protocol maps to the tera-data folder.', COLOR_ERROR));
     return disabled;
   }
 
@@ -221,9 +269,9 @@ module.exports = function Banker(mod) {
           if (args.length == 1) {
             if (checkDisabled()) return;
             blacklistMode = blacklistMode ? BlacklistModes.NONE : BlacklistModes.ADD;
-            msg(`Next item deposited or retrieved will be added to blacklist`);
+            sendMsg(`Next item deposited or retrieved will be added to blacklist`);
           } else if (args.length == 2 && isNormalInteger(args[1])) {
-            msg(`Item ${args[1]} added to blacklist`);
+            sendMsg(`Item ${msg(args[1],COLOR_VALUE)} added to blacklist`);
             blacklist.add(args[1]);
             saveConfig();
           } else {
@@ -235,9 +283,9 @@ module.exports = function Banker(mod) {
           if (args.length == 1) {
             if (checkDisabled()) return;
             blacklistMode = blacklistMode ? BlacklistModes.NONE : BlacklistModes.REMOVE;
-            msg(`Next item deposited or retrieved will be removed from blacklist`);
+            sendMsg(`Next item deposited or retrieved will be removed from blacklist`);
           } else if (args.length == 2 && isNormalInteger(args[1])) {
-            msg(`Item ${args[1]} removed from blacklist`);
+            sendMsg(`Item ${msg(args[1],COLOR_VALUE)} removed from blacklist`);
             blacklist.add(args[1]);
             saveConfig();
           } else {
@@ -248,24 +296,24 @@ module.exports = function Banker(mod) {
           if (checkDisabled()) return;
           blacklistMode = blacklistMode ? BlacklistModes.NONE : BlacklistModes.ANY;
           if (blacklistMode) {
-            msg('Next banked or retrieved items will be blacklisted');
-            msg('Use "bank blacklist mode" to disable');
+            sendMsg('Next retrieved items will be add to and banked items will be removed from blacklist');
+            sendMsg(`Use ${msg("bank blacklist mode",COLOR_COMMAND)} to finish mode`);
           } else {
-            msg('Blacklist mode disabled');
+            sendMsg(msg('Blacklist mode disabled'));
           }
           break;
         case 'clear':
-          msg('Blacklist cleared');
+          sendMsg(msg('Blacklist cleared'));
           blacklist.clear();
           saveConfig();
           break;
         case 'list':
           if (blacklist.size == 0) {
-            msg('Blacklist is empty.');
+            sendMsg('Blacklist is empty.');
           } else {
-            msg('Blacklist items:');
+            sendMsg('Blacklist items:');
             for (let item of blacklist)
-              msg(item);
+              sendMsg(item);
           }
           break;
       }
@@ -277,11 +325,11 @@ module.exports = function Banker(mod) {
   function tryBlacklistNext(item, store) {
     if (blacklistMode == BlacklistModes.ADD || (blacklistMode == BlacklistModes.ANY && !store)) {
       blacklist.add(item.id);
-      msg(`Item ${item.id} added to blacklist`);
+      sendMsg(msg(`Item ${msg(item.id, COLOR_VALUE)} added to blacklist`));
       saveConfig();
     } else if (blacklistMode == BlacklistModes.REMOVE || (blacklistMode == BlacklistModes.ANY && store)) {
       blacklist.delete(item.id);
-      msg(`Item ${item.id} removed from blacklist`);
+      sendMsg(`Item ${msg(item.id, COLOR_VALUE)} removed from blacklist`);
       saveConfig();
     }
 
@@ -292,14 +340,20 @@ module.exports = function Banker(mod) {
   function checkBankOpen(ignoreOutput) {
     if (currentContract != BANK_CONTRACT) {
       if(!ignoreOutput)
-        msg('Bank must be open to use banker module.', ERROR);
+        sendMsg(msg('Bank must be open to use banker module.', COLOR_ERROR));
       return false;
     } else if (!mod.settings.depositIn[IdBankTypes[currentBankTypeId]]) {
       if(!ignoreOutput)
-        msg('Not allowed to bank here. Check "bank settings" if you did not expected this.', ERROR);
+        sendMsg(msg('Not allowed to bank here. Check "bank settings" if you did not expected this.', COLOR_ERROR));
       return false;
     }
     return true;
+  }
+
+  function sendHelpInfoMsg() {
+    sendMsg(msg(`For more help and command list use `)
+      +msg(`bank help`, COLOR_COMMAND)
+    );
   }
 
   function autoDeposit(allTabs) {
@@ -358,11 +412,11 @@ module.exports = function Banker(mod) {
         if (hasNextOffset(bankInventory)) {
           changeBankOffset(next, () => autoDeposit(allTabs));
         } else {
-          msg("Finished depositing all tabs");
+          sendMsg(msg("Finished depositing all tabs"));
           changeBankOffset(next, () => undefined);
         }
       } else {
-        msg(`Finished depositing tab ${bankInventory.offset / BANK_PAGE_SLOTS + 1}`);
+        sendMsg(msg(`Finished depositing tab ${bankInventory.offset / BANK_PAGE_SLOTS + 1}`));
       }
     };
 
@@ -402,7 +456,7 @@ module.exports = function Banker(mod) {
 
     setTimeout(() => {
       if (!bankLoaded)
-        msg(`Failed to load bank tab ${(offset / BANK_PAGE_SLOTS) + 1}.`, ERROR);
+        sendMsg(msg(`Failed to load bank tab ${(offset / BANK_PAGE_SLOTS) + 1}.`, COLOR_ERROR));
     }, PAGE_CHANGE_TIMEOUT);
 
     setTimeout(() => {
@@ -439,9 +493,9 @@ module.exports = function Banker(mod) {
       }
 
       if (missing.length) {
-        let errorText = missing.join(', ')
-            + ' are missing in the protocol map. Install missing protocols before using banker.';
-        msg(errorText, ERROR);
+        let errorText = msg(missing.join(', '),COLOR_VALUE)
+            + msg(' are missing in the protocol map. Install missing protocols before using banker.', COLOR_ERROR);
+        sendMsg(errorText);
         mod.error(errorText);
         disabled = true;
       }
@@ -473,8 +527,12 @@ module.exports = function Banker(mod) {
 
   function msg(text, color) {
     if (color !== undefined)
-      mod.command.message(`<font color="${color}"> ${text}</font>`);
+      return `<font color="${color}">${text}</font>`;
     else
-      mod.command.message(` ${text}`);
+      return `${text}`;
+  }
+
+  function sendMsg(text) {
+    mod.command.message(text);
   }
 };

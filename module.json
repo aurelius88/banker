@@ -2,13 +2,13 @@
     "name": "banker",
     "description": "Deposit items faster",
     "author": "aurelius88 / tera-tools",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "options": {
         "niceName": "Banker",
         "guiName": "Banker",
         "loadOn": "versioncheck",
         "reloadable": true,
-        "settingsVersion": 2,
+        "settingsVersion": 3,
         "settingsFile": "config.json",
         "settingsMigrator": "settings.js",
         "settingsAutosaveOnClose": true
