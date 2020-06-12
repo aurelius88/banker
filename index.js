@@ -61,7 +61,7 @@ module.exports = function Banker(mod) {
       if (onNextOffset) onNextOffset(event);
     }
   });
-  mod.hook('C_GET_WARE_ITEM', 4, event => {
+  mod.hook('C_GET_WARE_ITEM', "*", event => {
     tryBlacklistNext(event, false);
   });
   mod.hook('C_PUT_WARE_ITEM', 3, event => {
@@ -229,7 +229,15 @@ module.exports = function Banker(mod) {
     let bagItems = mod.game.inventory.bagOrPocketItems.slice(0);
     let bankItems = bankInventory.items.slice(0);
 
-    bagItems.sort((a, b) => a.id - b.id);
+    // Sort inventory such that they are sorted by stack size when id is equal and
+    // reverse sorted by slot when also stack sizes are equal.
+    // By using this sorting, you don't need to care about restacked stacks.
+    // E.g. you've got 200x Metamorphic Emblems in slot 3 and
+    // 200x Metamorphic Emblems in slot 6. If you would deposit slot 3 first, the inventory
+    // will move the 200x emblems of slot 6 to slot 3. So, the next slot to deposit would be
+    // slot 3 again.
+    // Depositing slot 6 first counters this behaviour. Next slot would be 3.
+    bagItems.sort((a, b) => a.id == b.id ? (a.amount == b.amount ? b.slot - a.slot : a.amount - b.amount) : a.id - b.id);
     bankItems.sort((a, b) => a.id - b.id);
     let aIdx = 0;
     let bIdx = 0;
@@ -244,7 +252,6 @@ module.exports = function Banker(mod) {
             depositItem(bagItems[aIdx], bankInventory.offset);
 
           aIdx++;
-          bIdx++;
 
           setTimeout(() => {
             depositNext();
