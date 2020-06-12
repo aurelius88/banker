@@ -20,6 +20,7 @@ module.exports = function Banker(mod) {
 
   let disabled;
   let bankInventory;
+  let bankOffsetStart;
   let currentContract;
   let onNextOffset;
   let blacklist = new Set();
@@ -131,12 +132,7 @@ module.exports = function Banker(mod) {
   }
 
   function depositAllTabs() {
-    if (bankInventory.offset != 0) {
-      changeBankOffset(0, () => {
-        autoDeposit(true);
-      });
-      return;
-    }
+    bankOffsetStart = bankInventory.offset;
     autoDeposit(true);
   }
 
@@ -266,8 +262,10 @@ module.exports = function Banker(mod) {
 
       if (allTabs) {
         let next = getNextOffset(bankInventory);
-        if (next != undefined) {
+        if (hasNextOffset(bankInventory)) {
           changeBankOffset(next, () => autoDeposit(allTabs));
+        } else {
+          changeBankOffset(next, () => undefined );
         }
       }
     }
@@ -291,8 +289,11 @@ module.exports = function Banker(mod) {
   }
 
   function getNextOffset(bank) {
-    if (bank.offset + BANK_PAGE_SLOTS < bank.numUnlockedSlots)
-      return bank.offset + BANK_PAGE_SLOTS;
+    return (bank.offset + BANK_PAGE_SLOTS) % bank.numUnlockedSlots;
+  }
+
+  function hasNextOffset(bank) {
+    return bankOffsetStart ? getNextOffset(bank) != bankOffsetStart : false;
   }
 
   function changeBankOffset(offset, callback) {
@@ -305,7 +306,7 @@ module.exports = function Banker(mod) {
 
     setTimeout(() => {
       if (!bankLoaded)
-        msg('Failed to load next bank page.', ERROR);
+        msg(`Failed to load bank page ${(offset % BANK_PAGE_SLOTS) + 1}.`, ERROR);
     }, PAGE_CHANGE_TIMEOUT);
 
     setTimeout(() => {
