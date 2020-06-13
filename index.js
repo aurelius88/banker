@@ -293,7 +293,7 @@ module.exports = function Banker(mod) {
   }
 
   function hasNextOffset(bank) {
-    return bankOffsetStart ? getNextOffset(bank) != bankOffsetStart : false;
+    return bankOffsetStart != undefined ? getNextOffset(bank) != bankOffsetStart : false;
   }
 
   function changeBankOffset(offset, callback) {
