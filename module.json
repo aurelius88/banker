@@ -2,7 +2,7 @@
     "name": "banker",
     "description": "Deposit items faster",
     "author": "aurelius88 / tera-tools",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "options": {
         "niceName": "Banker",
         "guiName": "Banker",

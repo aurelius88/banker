@@ -265,8 +265,11 @@ module.exports = function Banker(mod) {
         if (hasNextOffset(bankInventory)) {
           changeBankOffset(next, () => autoDeposit(allTabs));
         } else {
+          msg( "Finished depositing all tabs" );
           changeBankOffset(next, () => undefined );
         }
+      } else {
+        msg( `Finished depositing tab ${bankInventory.offset / BANK_PAGE_SLOTS + 1}` );
       }
     }
 
@@ -306,7 +309,7 @@ module.exports = function Banker(mod) {
 
     setTimeout(() => {
       if (!bankLoaded)
-        msg(`Failed to load bank page ${(offset % BANK_PAGE_SLOTS) + 1}.`, ERROR);
+        msg(`Failed to load bank tab ${(offset / BANK_PAGE_SLOTS) + 1}.`, ERROR);
     }, PAGE_CHANGE_TIMEOUT);
 
     setTimeout(() => {
