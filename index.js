@@ -1,6 +1,7 @@
 module.exports = function Banker(mod) {
   const BANK_CONTRACT = 26;
-  const BANK_TYPE = 1;
+  //1 = Bank, 3 = Guild Bank, 9 = Pet, 12 = Wardrobe
+  // const BANK_TYPE = 1;
   const BANK_PAGE_SLOTS = 72;
   const PAGE_CHANGE_TIMEOUT = 1000;
   const ERROR = '#ff0000';
@@ -22,6 +23,7 @@ module.exports = function Banker(mod) {
   let bankInventory;
   let bankOffsetStart;
   let currentContract;
+  let currentBankType;
   let onNextOffset;
   let blacklist = new Set();
 
@@ -49,6 +51,7 @@ module.exports = function Banker(mod) {
   mod.hook('S_CANCEL_CONTRACT', 1, event => {
     if (mod.game.me.is(event.senderId)) {
       currentContract = null;
+      currentBankType = null;
     }
   });
 
@@ -56,11 +59,10 @@ module.exports = function Banker(mod) {
     if (!mod.game.me.is(event.gameId))
         return;
 
-    if (event.container == BANK_TYPE) {
-      currentContract = BANK_CONTRACT;
-      bankInventory = event;
-      if (onNextOffset) onNextOffset(event);
-    }
+    currentBankType = event.container;
+    currentContract = BANK_CONTRACT;
+    bankInventory = event;
+    if (onNextOffset) onNextOffset(event);
   });
   mod.hook('C_GET_WARE_ITEM', "*", event => {
     tryBlacklistNext(event, false);
@@ -279,7 +281,7 @@ module.exports = function Banker(mod) {
   function depositItem(bagItem, offset) {
     mod.send('C_PUT_WARE_ITEM', 3, {
       gameId: mod.game.me.gameId,
-      container: BANK_TYPE,
+      container: currentBankType,
       offset: offset,
       money: 0,
       fromPocket: bagItem.pocket,
@@ -315,7 +317,7 @@ module.exports = function Banker(mod) {
     setTimeout(() => {
       mod.send('C_VIEW_WARE', 2, {
         gameId: mod.game.me.gameId,
-        type: BANK_TYPE,
+        type: currentBankType,
         offset: offset
       });
     }, getRandomDelay());
