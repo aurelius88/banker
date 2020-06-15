@@ -1,33 +1,28 @@
 "use strict";
 
 const DefaultSettings = {
-    human: false,
-    tab: false,
-    blacklist: []
+  human: false,
+  tab: false,
+  depositFrom:{
+    bag: true,
+    pockets: false,
+  },
+  depositIn: {
+    personal: true,
+    pet: true,
+    wardrobe: false,
+    guild: false,
+  },
+  blacklist: [],
 };
 
-module.exports = function MigrateSettings( from_ver, to_ver, settings ) {
-    if ( from_ver === undefined ) {
-        // Migrate legacy config file
-        return Object.assign( Object.assign({}, DefaultSettings ), settings );
-    } else if ( from_ver === null ) {
-        // No config file exists, use default settings
-        return DefaultSettings;
-    } else {
-        let migratedSettings = Object.assign({}, settings );
-        // Migrate from older/newer version (using the new system) to latest one
-        // upgrade...
-        for ( let cur_ver = from_ver; cur_ver < to_ver; cur_ver++ ) {
-            switch ( cur_ver ) {
-                case 1:
-                default:
-                    throw new Error( "So far there is only one settings version and this should never be reached!" );
-            }
-        }
-        if ( from_ver > to_ver ) migratedSettings = Object.assign( Object.assign({}, DefaultSettings ), settings );
-        // downgrade...
-        for ( let cur_ver = from_ver; cur_ver > to_ver; cur_ver-- );
-
-        return migratedSettings;
-    }
+module.exports = function MigrateSettings(from_ver, to_ver, settings) {
+  let defaultCopy = Object.assign({}, DefaultSettings);
+  if (from_ver === null) {
+    // No config file exists, use default settings
+    return DefaultSettings;
+  } else {
+    // Migrate legacy config file
+    return Object.assign(defaultCopy, settings);
+  }
 };

@@ -19,13 +19,20 @@ module.exports = function Banker(mod) {
     NONE: 0,
     REMOVE: 1,
     ADD: 2,
-    ANY: 3})
+    ANY: 3});
+
+  const IdBankTypes = Object.freeze({
+    1: "personal",
+    3: "guild",
+    9: "pet",
+    12: "wardrobe",
+  });
 
   let disabled;
   let bankInventory;
   let bankOffsetStart;
   let currentContract;
-  let currentBankType;
+  let currentBankTypeId;
   let onNextOffset;
   let blacklist = new Set();
 
@@ -53,18 +60,19 @@ module.exports = function Banker(mod) {
   mod.hook('S_CANCEL_CONTRACT', 1, event => {
     if (mod.game.me.is(event.senderId)) {
       currentContract = null;
-      currentBankType = null;
+      currentBankTypeId = null;
     }
   });
 
   mod.hook('S_VIEW_WARE_EX', 2, event => {
     if (!mod.game.me.is(event.gameId))
-        return;
+      return;
 
-    currentBankType = event.container;
-    currentContract = BANK_CONTRACT;
+    currentBankTypeId = event.container;
     bankInventory = event;
-    if (onNextOffset) onNextOffset(event);
+    if(currentContract == BANK_CONTRACT
+      && mod.settings.depositIn[IdBankTypes[currentBankTypeId]]
+      && onNextOffset) onNextOffset(event);
   });
   mod.hook('C_GET_WARE_ITEM', "*", event => {
     tryBlacklistNext(event, false);
@@ -77,10 +85,17 @@ module.exports = function Banker(mod) {
     $default() {
       argsError();
     },
+    pockets() { toggleBankFrom("pockets"); },
+    bag() { toggleBankFrom("bag"); },
+    personal() { toggleBankInto("personal"); },
+    pet() { toggleBankInto("pet"); },
+    guild() { toggleBankInto("guild"); },
+    wardrobe() { toggleBankInto("wardrobe"); },
+    settings: printSettings,
     human() {
       mod.settings.human = !mod.settings.human;
       saveConfig();
-      msg('Human mode ' + (mod.settings.human ? 'enabled' : 'disabled'));
+      msg(`Switched to ${mod.settings.human? '"human-like (slow)"' : '"fast"'} depositing speed`);
     },
     tab() {
       if (checkDisabled()) return;
@@ -102,7 +117,7 @@ module.exports = function Banker(mod) {
       //update tab mode
       mod.settings.tab = !mod.settings.tab;
       saveConfig();
-      msg('Single tab mode ' + (mod.settings.tab ? 'enabled' : 'disabled'));
+      msg(`Switched to ${mod.settings.tab ? '"single tab"' : '"all tabs"'} mode`);
     },
     blacklist(...args) {
       processBlacklistCommand(args);
@@ -129,6 +144,38 @@ module.exports = function Banker(mod) {
     msg('Invalid arguments.', ERROR);
   }
 
+  function toggleBankInto(type) {
+    mod.settings.depositIn[type] = !mod.settings.depositIn[type];
+    saveConfig();
+    msg(`Depositing in ${type} bank ${mod.settings.depositIn[type] ? 'enabled' : 'disabled'}`);
+  }
+
+  function toggleBankFrom(type) {
+    mod.settings.depositFrom[type] = !mod.settings.depositFrom[type];
+    saveConfig();
+    msg(`Depositing from ${type} ${mod.settings.depositFrom[type] ? 'enabled' : 'disabled'}`);
+  }
+
+  function settingsObjectToString(obj) {
+    let deposit = { true: [], false: [] };
+    let message = "";
+    for(let type in obj)
+      if(obj[type]) deposit.true.push(`${type}`);
+      else deposit.false.push(`${type}`);
+    if(deposit.true.length > 0) message += `${deposit.true.join(', ')}`;
+    if(deposit.false.length > 0) message += ` (Not: ${deposit.false.join(', ')})`;
+    return message;
+  }
+
+  function printSettings() {
+    let message = "Depositing items:";
+    message += `\nIn:   ${settingsObjectToString(mod.settings.depositIn)}`;
+    message += `\nFrom: ${settingsObjectToString(mod.settings.depositFrom)}`;
+    msg(message);
+    msg(`Depositing speed: ${mod.settings.human? '"Human-like (slow)"' : '"Fast"'}`);
+    msg(`Tab mode: ${mod.settings.tab ? '"Single tab"' : '"All tabs"'}`);
+  }
+
   function checkDisabled() {
     if (disabled)
       msg('Banker is disabled. Add the required protocol maps to the tera-data folder.', ERROR);
@@ -136,6 +183,7 @@ module.exports = function Banker(mod) {
   }
 
   function depositAllTabs() {
+    if(!bankInventory) return;
     bankOffsetStart = bankInventory.offset;
     autoDeposit(true);
   }
@@ -218,16 +266,25 @@ module.exports = function Banker(mod) {
 
   function checkBankOpen() {
     if (currentContract != BANK_CONTRACT) {
-      msg('Bank must be open to use banker module', ERROR);
+      msg('Bank must be open to use banker module.', ERROR);
+      return false;
+    } else if (!mod.settings.depositIn[IdBankTypes[currentBankTypeId]]) {
+      msg('Not allowed to bank here. Check "bank settings" if you did not expected this.', ERROR);
       return false;
     }
-
     return true;
   }
 
   function autoDeposit(allTabs) {
-    let bagItems = mod.game.inventory.bagOrPocketItems.slice(0);
-    let bankItems = bankInventory.items.slice(0);
+    let bagItems;
+    switch((mod.settings.depositFrom.bag && 0b1)
+      | (mod.settings.depositFrom.pockets && 0b10)) {
+      case 0b1: bagItems = mod.game.inventory.bagItems; break;
+      case 0b10: bagItems = mod.game.inventory.items.filter(item => mod.game.inventory.isInPockets(item)); break;
+      case 0b11: bagItems = mod.game.inventory.bagOrPocketItems; break;
+      default: bagItems = [];
+    }
+    let bankItems = bankInventory.items;
 
     // Sort inventory such that they are sorted by stack size when id is equal and
     // reverse sorted by slot when also stack sizes are equal. Items in higher pockets
@@ -288,7 +345,7 @@ module.exports = function Banker(mod) {
   function depositItem(bagItem, offset) {
     mod.send('C_PUT_WARE_ITEM', 3, {
       gameId: mod.game.me.gameId,
-      container: currentBankType,
+      container: currentBankTypeId,
       offset: offset,
       money: 0,
       fromPocket: bagItem.pocket,
@@ -324,7 +381,7 @@ module.exports = function Banker(mod) {
     setTimeout(() => {
       mod.send('C_VIEW_WARE', 2, {
         gameId: mod.game.me.gameId,
-        type: currentBankType,
+        type: currentBankTypeId,
         offset: offset
       });
     }, getRandomDelay());
