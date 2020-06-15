@@ -1,7 +1,7 @@
 {
     "files": {
-        "index.js": "f322c6c3d98c92f5d12c0e54bcb8f759dd8a08ea5167512f84079f7b9743c548",
-        "module.json": "20e21464afc4b551e327ed5ebad86a8e20b6de553c9cc065215d6cd3d38b7a0e",
+        "index.js": "03df0274d7737015bf3855cd2ca5723e7e25c7a3df7c5a1131cb4b88b0d6dec6",
+        "module.json": "86f0ac4ed17fc5c50c4b5fc8ef298a302c310dd234b5f8df161af6d5892381a3",
         "protocols/defs/C_GET_WARE_ITEM.4.def": "4324341c604321dac93f773c119a6417237f0c2da3761a40f546986c965acdb4",
         "protocols/defs/C_PUT_WARE_ITEM.3.def": "5276f07ac6cc9e7cecc0d0824bcc3894dd064f7c5f01040c44f97427a435acd0",
         "protocols/defs/S_VIEW_WARE_EX.2.def": "a7455a7d7421f2d53d0f6ec64f5403f1b7f03816dca77735d5fe67ef8ccb391e",

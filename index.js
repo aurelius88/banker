@@ -3,6 +3,8 @@ module.exports = function Banker(mod) {
   //1 = Bank, 3 = Guild Bank, 9 = Pet, 12 = Wardrobe
   // const BANK_TYPE = 1;
   const BANK_PAGE_SLOTS = 72;
+  const INV_SLOTS = 120; // aka pocket 0
+  const POCKET_SLOTS = 80;
   const PAGE_CHANGE_TIMEOUT = 1000;
   const ERROR = '#ff0000';
 
@@ -228,14 +230,19 @@ module.exports = function Banker(mod) {
     let bankItems = bankInventory.items.slice(0);
 
     // Sort inventory such that they are sorted by stack size when id is equal and
-    // reverse sorted by slot when also stack sizes are equal.
+    // reverse sorted by slot when also stack sizes are equal. Items in higher pockets
+    // behaves like higher slot number.
     // By using this sorting, you don't need to care about restacked stacks.
     // E.g. you've got 200x Metamorphic Emblems in slot 3 and
-    // 200x Metamorphic Emblems in slot 6. If you would deposit slot 3 first, the inventory
-    // will move the 200x emblems of slot 6 to slot 3. So, the next slot to deposit would be
-    // slot 3 again.
+    // 200x Metamorphic Emblems in slot 6. If you would deposit slot 3 first, the
+    // inventory will move the 200x emblems of slot 6 to slot 3. So, the next slot
+    // to deposit would be slot 3 again.
     // Depositing slot 6 first counters this behaviour. Next slot would be 3.
-    bagItems.sort((a, b) => a.id == b.id ? (a.amount == b.amount ? b.slot - a.slot : a.amount - b.amount) : a.id - b.id);
+    bagItems.sort((a, b) =>
+      a.id != b.id ? a.id - b.id
+        : a.amount != b.amount ? a.amount - b.amount
+          : (b.pocket > 0 ? (b.pocket - 1) * POCKET_SLOTS + INV_SLOTS : 0) + b.slot
+          - ((a.pocket > 0 ? (a.pocket - 1) * POCKET_SLOTS + INV_SLOTS : 0) + a.slot));
     bankItems.sort((a, b) => a.id - b.id);
     let aIdx = 0;
     let bIdx = 0;
