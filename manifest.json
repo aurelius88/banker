@@ -1,7 +1,8 @@
 {
     "files": {
         "index.js": "3f6e164c5bde4080f546d358c48debc0659488920d161b630e5ef2d385d85c7c",
-        "module.json": "00db93f121b79e0432c53e57f687b1ab983787068a4458686b0c36b952859fda",
+        "module.json": "0477ff84440eeff6c70b2a87272b596277b318c21f56b996b7bed3d706e1c931",
+        "settings.js": "d3819cb5d946774dbc76572b9ad332c8f2555cc17d49bd3822ad40049109e1c8",
         "protocols/defs/C_GET_WARE_ITEM.4.def": "4324341c604321dac93f773c119a6417237f0c2da3761a40f546986c965acdb4",
         "protocols/defs/C_PUT_WARE_ITEM.3.def": "5276f07ac6cc9e7cecc0d0824bcc3894dd064f7c5f01040c44f97427a435acd0",
         "protocols/defs/S_VIEW_WARE_EX.2.def": "a7455a7d7421f2d53d0f6ec64f5403f1b7f03816dca77735d5fe67ef8ccb391e",
@@ -11,7 +12,7 @@
         "protocols/map/protocol.366225.map": "67645caff57e34cef29e8bd4142ff40dc5ca45d1be128b44bc09be4c1616552f",
         "protocols/map/protocol.366226.map": "61c009cdda25ddad4b05620d559eeb2ef43acf6b9663851f794a5fb34aab288b",
         "protocols/map/protocol.368189.map": "227cba354e28065d46cd50ff005434829c90c76c995da3f851181f3f51f8a3e4",
-        "settings.js": "d3819cb5d946774dbc76572b9ad332c8f2555cc17d49bd3822ad40049109e1c8"
+        "protocols/map/protocol.369048.map": "c5b758199fd3dbe3bede42086a20e4e3fb45c952419ae315b3732fb4f9d6c9da"
     },
     "defs": {
         "C_GET_WARE_ITEM": 4,
