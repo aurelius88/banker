@@ -80,6 +80,9 @@ module.exports = function Banker(mod) {
   mod.hook('C_PUT_WARE_ITEM', 3, event => {
     tryBlacklistNext(event, true);
   });
+  // TODO react on sort and item movement:
+  // C_APPLY_INVEN_POCKET_SORT
+  // C_MOVE_ITEM
 
   mod.command.add('bank', {
     $default() {
