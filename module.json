@@ -8,7 +8,7 @@
         "guiName": "Banker",
         "loadOn": "versioncheck",
         "reloadable": true,
-        "settingsVersion": 1,
+        "settingsVersion": 2,
         "settingsFile": "config.json",
         "settingsMigrator": "settings.js",
         "settingsAutosaveOnClose": true
