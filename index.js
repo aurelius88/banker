@@ -19,7 +19,7 @@ module.exports = function Banker(mod) {
     NONE: 0,
     REMOVE: 1,
     ADD: 2,
-    ANY: 3});
+    ANY: 3 });
 
   const IdBankTypes = Object.freeze({
     1: "personal",
@@ -182,7 +182,7 @@ module.exports = function Banker(mod) {
   function checkDisabled() {
     if (disabled)
       msg('Banker is disabled. Add the required protocol maps to the tera-data folder.', ERROR);
-    return disabled
+    return disabled;
   }
 
   function depositAllTabs() {
@@ -334,13 +334,13 @@ module.exports = function Banker(mod) {
         if (hasNextOffset(bankInventory)) {
           changeBankOffset(next, () => autoDeposit(allTabs));
         } else {
-          msg( "Finished depositing all tabs" );
-          changeBankOffset(next, () => undefined );
+          msg("Finished depositing all tabs");
+          changeBankOffset(next, () => undefined);
         }
       } else {
-        msg( `Finished depositing tab ${bankInventory.offset / BANK_PAGE_SLOTS + 1}` );
+        msg(`Finished depositing tab ${bankInventory.offset / BANK_PAGE_SLOTS + 1}`);
       }
-    }
+    };
 
     depositNext();
   }
@@ -407,7 +407,7 @@ module.exports = function Banker(mod) {
       let missing = [];
       disabled = false;
 
-			for (var name of PROTOCOLS) {
+      for (var name of PROTOCOLS) {
         var valid = mod.dispatch.protocolMap.name.get(name);
         if (valid === undefined || valid == null) {
           missing.push(name);
@@ -415,14 +415,15 @@ module.exports = function Banker(mod) {
       }
 
       if (missing.length) {
-        let errorText = missing.join(', ') + ' are missing in the protocol map. Install missing protocols before using banker.';
+        let errorText = missing.join(', ')
+            + ' are missing in the protocol map. Install missing protocols before using banker.';
         msg(errorText, ERROR);
         mod.error(errorText);
         disabled = true;
       }
-		} catch (e) {
-			mod.error(e);
-		}
+    } catch (e) {
+      mod.error(e);
+    }
   }
 
   function getRandomDelay() {

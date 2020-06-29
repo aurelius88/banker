@@ -1,0 +1,41 @@
+{
+    "env": {
+        "es2020": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "script"
+    },
+    "rules": {
+        "indent": [
+            "warn", 2,
+            { "SwitchCase": 1 }
+        ],
+        "operator-linebreak": [
+            "warn",
+            "before",
+            { "overrides":
+                {
+                    "?": "after",
+                    ":": "before"
+                }
+            }
+        ],
+        "semi": ["warn", "always"],
+        "no-unused-expressions": "warn",
+        "no-unused-vars": "warn",
+        "no-console": "warn",
+        "no-empty": "warn",
+        "valid-typeof": "warn",
+        "max-len": ["warn", {
+            "code": 120,
+            "comments": 90,
+            "ignoreTrailingComments": true,
+            "ignorePattern": "^//\\s*"
+        }],
+        "space-in-parens": ["warn", "never"],
+        "object-curly-spacing": ["warn", "always", { "arraysInObjects": true, "objectsInObjects": true }]
+    }
+}
