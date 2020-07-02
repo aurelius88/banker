@@ -12,7 +12,8 @@
         "protocols/map/protocol.366225.map": "67645caff57e34cef29e8bd4142ff40dc5ca45d1be128b44bc09be4c1616552f",
         "protocols/map/protocol.366226.map": "61c009cdda25ddad4b05620d559eeb2ef43acf6b9663851f794a5fb34aab288b",
         "protocols/map/protocol.368189.map": "227cba354e28065d46cd50ff005434829c90c76c995da3f851181f3f51f8a3e4",
-        "protocols/map/protocol.369048.map": "c5b758199fd3dbe3bede42086a20e4e3fb45c952419ae315b3732fb4f9d6c9da"
+        "protocols/map/protocol.369048.map": "c5b758199fd3dbe3bede42086a20e4e3fb45c952419ae315b3732fb4f9d6c9da",
+        "protocols/map/protocol.370143.map": "66d173c1f018f806b05c7b0d49c3a96ba2cb41218b5e5fedae7ad50fd8fb7e5d"
     },
     "defs": {
         "C_GET_WARE_ITEM": 4,
