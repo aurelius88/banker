@@ -114,7 +114,7 @@ module.exports = function Banker(mod) {
     auto() {
       mod.settings.auto = !mod.settings.auto;
       saveConfig();
-      sendMsg(`Auto mode ${msg(mod.settings.auto ? 'enabled' : 'disabled',COLOR_VALUE)}`);
+      sendMsg(`Switched to ${msg(mod.settings.auto ? 'automatic' : 'manual',COLOR_VALUE)} mode`);
     },
     human() {
       mod.settings.human = !mod.settings.human;

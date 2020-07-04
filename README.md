@@ -33,12 +33,13 @@ Items on the blacklist will not be deposited.
 ### Command List:
 
 Command                        | Short Form         | Description
------------------------------- | ------------------ | --------------------------------------------------------------------------------------------
+------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bank                           |                    | Deposits matching items to bank. (Default mode is all tabs)
 bank **mode**                  |                    | Toggles the default deposit mode. Modes are 'all tabs' or 'single tab' (Default is all tabs)
 bank **tab**                   |                    | Deposits matching items to bank in the current tab only.
 bank **all**                   |                    | Deposits matching items to bank in all tabs.
 bank **human**                 |                    | Toggle human-like delays (Default is off)
+bank **auto**                  |                    | Toggles automatic bank mode. If activated, it deposits items automatically when a bank is opened. It also depends on tab mode (single tab or all tabs). If tab mode is set to single mode it will only deposit automatically in first tab.
 bank **blacklist mode**        | bank **bl mode**   | Toggle blacklist mode. See below for blacklist usage
 bank **blacklist add**         | bank **bl a**      | The next item moved will be added to the blacklist
 bank **blacklist add** `id`    | bank **bl a** `id` | Add the item id to the blacklist
