@@ -78,7 +78,7 @@ module.exports = function Banker(mod) {
     currentBankTypeId = event.container;
     bankInventory = event;
 
-    if (mod.settings.auto  && blacklistMode == BlacklistModes.NONE) {
+    if (event.action == 0 && mod.settings.auto  && blacklistMode == BlacklistModes.NONE) {
       if(mod.settings.tab) {
         if(lastOffset !== event.offset) deposit();
       } else {
