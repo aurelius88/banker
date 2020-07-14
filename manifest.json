@@ -8,7 +8,8 @@
         "protocols/defs/S_VIEW_WARE_EX.2.def": "a7455a7d7421f2d53d0f6ec64f5403f1b7f03816dca77735d5fe67ef8ccb391e",
         "protocols/map/protocol.370143.map": "66d173c1f018f806b05c7b0d49c3a96ba2cb41218b5e5fedae7ad50fd8fb7e5d",
         "protocols/map/protocol.370145.map": "5612b7d3713797bcde8e6ce2fa7eafd8b5f7c812af0b0f7a77c196e222db90f1",
-        "protocols/map/protocol.370134.map": "9663404e17be20aa05ad8d22cd6c9a426869be0a8366d9a9a4219886b6cd40a1"
+        "protocols/map/protocol.370134.map": "9663404e17be20aa05ad8d22cd6c9a426869be0a8366d9a9a4219886b6cd40a1",
+        "protocols/map/protocol.371484.map": "d033838f7be3f9aed8239f0970b35ccc456b88a0b8c9acb1a69c195103c86a74"
     },
     "defs": {
         "C_GET_WARE_ITEM": 4,
