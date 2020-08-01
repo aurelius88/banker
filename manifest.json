@@ -10,7 +10,8 @@
         "protocols/map/protocol.370145.map": "5612b7d3713797bcde8e6ce2fa7eafd8b5f7c812af0b0f7a77c196e222db90f1",
         "protocols/map/protocol.370134.map": "9663404e17be20aa05ad8d22cd6c9a426869be0a8366d9a9a4219886b6cd40a1",
         "protocols/map/protocol.371484.map": "d033838f7be3f9aed8239f0970b35ccc456b88a0b8c9acb1a69c195103c86a74",
-        "protocols/map/protocol.371511.map": "f496b63cb6ca256905b5a57b56a12d4456bfc81bb8aa0871c995c69f50dd37f9"
+        "protocols/map/protocol.371511.map": "f496b63cb6ca256905b5a57b56a12d4456bfc81bb8aa0871c995c69f50dd37f9",
+        "protocols/map/protocol.371541.map": "55f9b518cdbabf1aa0d84ff8b5f5a1c6a6229f96ba0ae688e3a02c2ad3a4b152"
     },
     "defs": {
         "C_GET_WARE_ITEM": 4,
