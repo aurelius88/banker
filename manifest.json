@@ -1,11 +1,12 @@
 {
     "files": {
-        "index.js": "a34ff22d2677235c75cfbe1acf12b2b5905d076e158717f6bfc470c614d4a028",
+        "index.js": "5643fc42ec55bb7ce89bc8ad7a30f2dbdcb757f1720ddb6348f91b4640e8d7b1",
         "module.json": "7168207f85a83ec43f8290edbb6f5981e4246844710ccb5cd6675af74c8628bc",
         "settings.js": "ebc3333c676e8b2aedad8ddb888bd2438ac74a182223d099eedb59d068cd2a0a",
         "protocols/defs/C_GET_WARE_ITEM.4.def": "4324341c604321dac93f773c119a6417237f0c2da3761a40f546986c965acdb4",
         "protocols/defs/C_PUT_WARE_ITEM.3.def": "5276f07ac6cc9e7cecc0d0824bcc3894dd064f7c5f01040c44f97427a435acd0",
-        "protocols/defs/S_VIEW_WARE_EX.2.def": "a7455a7d7421f2d53d0f6ec64f5403f1b7f03816dca77735d5fe67ef8ccb391e",
+        "protocols/defs/S_VIEW_WARE_EX.2.def": "9832a7461cbeaf3e28ff92f6b562f89d727f9297e0722c5191d5acb5085e0e88",
+        "protocols/defs/S_VIEW_WARE_EX.3.def": "b1a3c78503ea2da02373b7498bf8db8bd6f6fc92381b0a15c0751a3e8dd5539b",
         "protocols/map/protocol.370143.map": "66d173c1f018f806b05c7b0d49c3a96ba2cb41218b5e5fedae7ad50fd8fb7e5d",
         "protocols/map/protocol.370145.map": "5612b7d3713797bcde8e6ce2fa7eafd8b5f7c812af0b0f7a77c196e222db90f1",
         "protocols/map/protocol.370134.map": "9663404e17be20aa05ad8d22cd6c9a426869be0a8366d9a9a4219886b6cd40a1",

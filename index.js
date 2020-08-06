@@ -71,7 +71,7 @@ module.exports = function Banker(mod) {
     }
   });
 
-  mod.hook('S_VIEW_WARE_EX', 2, event => {
+  mod.hook('S_VIEW_WARE_EX', '*', event => {
     if (!mod.game.me.is(event.gameId))
       return;
 
@@ -90,10 +90,10 @@ module.exports = function Banker(mod) {
       && mod.settings.depositIn[IdBankTypes[currentBankTypeId]]
       && onNextOffset) onNextOffset(event);
   });
-  mod.hook('C_GET_WARE_ITEM', "*", event => {
+  mod.hook('C_GET_WARE_ITEM', '*', event => {
     tryBlacklistNext(event, false);
   });
-  mod.hook('C_PUT_WARE_ITEM', 3, event => {
+  mod.hook('C_PUT_WARE_ITEM', '*', event => {
     tryBlacklistNext(event, true);
   });
   // TODO react on sort and item movement:
