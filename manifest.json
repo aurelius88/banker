@@ -13,7 +13,8 @@
         "protocols/map/protocol.371484.map": "d033838f7be3f9aed8239f0970b35ccc456b88a0b8c9acb1a69c195103c86a74",
         "protocols/map/protocol.371511.map": "f496b63cb6ca256905b5a57b56a12d4456bfc81bb8aa0871c995c69f50dd37f9",
         "protocols/map/protocol.371541.map": "55f9b518cdbabf1aa0d84ff8b5f5a1c6a6229f96ba0ae688e3a02c2ad3a4b152",
-        "protocols/map/protocol.372755.map": "4a76f068019d59a9f2a4d5646367b6123291b655225765f944271bca76e22541"
+        "protocols/map/protocol.372755.map": "4a76f068019d59a9f2a4d5646367b6123291b655225765f944271bca76e22541",
+        "protocols/map/protocol.372753.map": "4a76f068019d59a9f2a4d5646367b6123291b655225765f944271bca76e22541"
     },
     "defs": {
         "C_GET_WARE_ITEM": 4,
