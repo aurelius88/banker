@@ -493,9 +493,8 @@ module.exports = function Banker(mod) {
       }
 
       if (missing.length) {
-        let errorText = msg(missing.join(', '),COLOR_VALUE)
-            + msg(' are missing in the protocol map. Install missing protocols before using banker.', COLOR_ERROR);
-        sendMsg(errorText);
+        let errorText = msg(`${missing.join(', ')} are missing in the protocol map. Install missing protocols before using banker.\n`)
+            + msg(`Note: Since version 372752 (v97.2) (or even earlier) opcodes are not changing anymore. Therefore to fix it, just copy a protocol map in ...YourTeraToolbox/data/opcodes/ that got a number higher than or equal 372752 and rename it to "protocol.${mod.dispatch.protocolVersion}.map" or "protocol.${mod.dispatch.protocolVersion}". (depending on whether file endings are displayed or not)`);
         mod.error(errorText);
         disabled = true;
       }
