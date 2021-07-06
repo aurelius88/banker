@@ -1,7 +1,7 @@
 {
     "files": {
-        "index.js": "15db590d03eabfa40c915a07c4318d6f72dcf64d141b31c8e23516e3f3c97d8d",
-        "module.json": "7168207f85a83ec43f8290edbb6f5981e4246844710ccb5cd6675af74c8628bc",
+        "index.js": "d5b2f89fb4c3632d35c71da82e40d781fd4f843ca33feaaf22f9b86847f937dd",
+        "module.json": "64b2910627181f072ef92fca4ffa303c19b7cc28a26d66b5edc4d4fdf51b65d1",
         "settings.js": "ebc3333c676e8b2aedad8ddb888bd2438ac74a182223d099eedb59d068cd2a0a",
         "protocols/defs/C_GET_WARE_ITEM.4.def": "4324341c604321dac93f773c119a6417237f0c2da3761a40f546986c965acdb4",
         "protocols/defs/C_PUT_WARE_ITEM.3.def": "5276f07ac6cc9e7cecc0d0824bcc3894dd064f7c5f01040c44f97427a435acd0",

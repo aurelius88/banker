@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 module.exports = function Banker(mod) {
   const BANK_CONTRACT = 26;
   //1 = Bank, 3 = Guild Bank, 9 = Pet, 12 = Wardrobe
@@ -15,7 +18,9 @@ module.exports = function Banker(mod) {
     'C_GET_WARE_ITEM',
     'C_PUT_WARE_ITEM',
     'C_VIEW_WARE',
-    'S_VIEW_WARE_EX'
+    'S_VIEW_WARE_EX',
+    'S_CANCEL_CONTRACT',
+    'S_REQUEST_CONTRACT'
   ];
 
   const BlacklistModes = Object.freeze({
@@ -31,7 +36,8 @@ module.exports = function Banker(mod) {
     12: "wardrobe",
   });
 
-  let disabled;
+  let disabled = false;
+  let needManualFix = false;
   let lastOffset;
   let deposited = false;
   let bankInventory;
@@ -44,13 +50,21 @@ module.exports = function Banker(mod) {
   let blacklistMode = BlacklistModes.NONE;
 
   loadConfig();
+  validateDefinitions();
+  validateProtocolMap();
 
-  //we are already in a game, mod was likely reloaded
-  if (mod.game.me.gameId) {
-    validateProtocolMap();
-  }
-  mod.game.on('enter_game', () => {
-    validateProtocolMap();
+  mod.game.on('leave_loading_screen', () => {
+    if(disabled) {
+      if(needManualFix){
+        mod.setTimeout(() => {
+          sendMsg(msg(`Automatic fixing failed. Manual fixing required. Please check Tera Toolbox log for details.`, COLOR_ERROR));
+        }, 3000);
+      } else {
+        mod.setTimeout(() => {
+          sendMsg(msg(`Please restart Tera and Tera Toolbox to apply fixes.`, COLOR_ERROR));
+        }, 3000);
+      }
+    }
   });
 
   if (disabled)
@@ -477,29 +491,152 @@ module.exports = function Banker(mod) {
     mod.saveSettings();
   }
 
+  function readProtocolMap(pathToFile, isKeyFirst = true) {
+    let map = new Map();
+    let data = fs.readFileSync(pathToFile, "utf8");
+    if (!data) throw new Error("[InputError]: Could not read file.");
+    let lines = data.toString().split(/\s*\r?\n\s*/);
+    let keyIndex = isKeyFirst ? 0 : 1;
+    let valueIndex = isKeyFirst ? 1 : 0;
+    // init OPCODE_MAP
+    for (let line of lines) {
+      let divided = line.trim().split(/\s*=\s*|\s*\s\s*/);
+      if (divided.length >= 2) {
+        map.set(divided[keyIndex], divided[valueIndex]);
+      }
+    }
+    return map;
+  }
+
+  function writeProtocolMap(map, pathToFile, divider = ' ', isKeyFirst = true) {
+    let lines = [];
+    if(isKeyFirst) {
+      for(let [k,v] of map) {
+        lines.push(`${k}${divider}${v}`);
+      }
+    } else {
+      for(let [k,v] of map) {
+        lines.push(`${v}${divider}${k}`);
+      }
+    }
+    let data = lines.join('\n');
+    fs.writeFileSync(pathToFile, data);
+  }
+
   function validateProtocolMap() {
-    if (disabled)
-      return;
+    let missing = [];
 
-    try {
-      let missing = [];
-      disabled = false;
+    for (var name of PROTOCOLS) {
+      var valid = mod.dispatch.protocolMap.name.get(name);
+      if (valid === undefined || valid == null) {
+        missing.push(name);
+      }
+    }
 
-      for (var name of PROTOCOLS) {
-        var valid = mod.dispatch.protocolMap.name.get(name);
-        if (valid === undefined || valid == null) {
-          missing.push(name);
+    if (missing.length) {
+      disabled = true;
+      let mapPath = path.join(__dirname, "..", "..", "data", "opcodes");
+      let bankerMapPath = path.join(__dirname, "protocols", "map");
+      let curProtocolVersion = mod.dispatch.protocolVersion;
+      let errorText = msg(`Missing opcode mapping for ${
+        missing.join(', ')} in protocol map. Trying to fix protocol map...`);
+      mod.warn(errorText);
+      //let bankerMaps = fs.readdirSync(bankerMapPath);
+      let maps = fs.readdirSync(mapPath);
+      let bankerMapSource = path.join(bankerMapPath, fs.readdirSync(bankerMapPath).reverse()[0]);
+      let mapSource = null;
+      let resultingMap = null;
+      let neededMap = readProtocolMap(bankerMapSource);
+      for(let map of maps.reverse()) {
+        let splittedMap = map.split('.');
+        let protocolVersion = parseInt(splittedMap[1]);
+        if(splittedMap[0] === "protocol" && Number.isInteger(protocolVersion) && protocolVersion >= 372752) {
+          mapSource = path.join(mapPath, map);
+          mod.log(`-> Found ${map} as an existing protocol map.`);
+          resultingMap = readProtocolMap(mapSource);
+          for(let missingName of missing) {
+            let neededOpcode = neededMap.get(missingName);
+            let hasMissingName = resultingMap.has(missingName);
+            if(!hasMissingName || resultingMap.get(missingName) != neededOpcode) {
+              mod.log(`-> ${hasMissingName ? 'Fix' : 'Add missing' } mapping of ${missingName}.`);
+              resultingMap.set(missingName, neededOpcode);
+            }
+          }
+          break;
         }
       }
-
-      if (missing.length) {
-        let errorText = msg(`${missing.join(', ')} are missing in the protocol map. Install missing protocols before using banker.\n`)
-            + msg(`Note: Since version 372752 (v97.2) (or even earlier) opcodes are not changing anymore. Therefore to fix it, just copy a protocol map in ...YourTeraToolbox/data/opcodes/ that got a number higher than or equal 372752 and rename it to "protocol.${mod.dispatch.protocolVersion}.map" or "protocol.${mod.dispatch.protocolVersion}". (depending on whether file endings are displayed or not)`);
-        mod.error(errorText);
-        disabled = true;
+      if(resultingMap == null && neededMap != null)
+        resultingMap = neededMap;
+      let mapDestination = path.join(mapPath, `protocol.${mod.dispatch.protocolVersion}.map`);
+      try {
+        writeProtocolMap(resultingMap, mapDestination);
+        mod.log(`Successfully fixed missing protocol mapping. Please restart Tera and Tera Toolbox to make the fix work.`);
+      } catch(err) {
+        // failed to fix
+        mod.error(`Could not fix protocol map. Try to manually fix it. Just copy a protocol map in ${
+          mapPath} or in ${
+          bankerMapPath} that got a version number higher than or equal to 372752 and rename it to "protocol.${
+          curProtocolVersion}.map" or "protocol.${
+          curProtocolVersion}" (depending on whether file endings are displayed or not). `
+          + `If it still does not work, create a new issue on GitHub (${mod.info.supportUrl}).`
+        );
+        needManualFix = true;
       }
-    } catch (e) {
-      mod.error(e);
+    }
+  }
+
+  function validateDefinitions() {
+    const defPath = path.join(__dirname, "..", "..", "data", "definitions");
+    const bankerDefPath = path.join(__dirname, "protocols", "defs");
+    let bankerDefs = fs.readdirSync(bankerDefPath);
+    // let bankerDefToVersion = new Map(
+    //   bankerDefs.map(fileName => {
+    //     let splittedName = fileName.split('.');
+    //     splittedName.splice(2);
+    //     return splittedName;
+    //   }));
+    let missingDefs = [];
+    for(let name of PROTOCOLS) {
+      var version = mod.dispatch.latestDefVersion.get(name);
+      if(version == undefined) {
+        missingDefs.push(name);
+      }
+    }
+    let restoredDefs = [];
+    if(missingDefs.length) {
+      disabled = true;
+      mod.warn(`Missing definition file${
+        missingDefs.length > 1 ? 's' : ''} for ${
+        missingDefs.join(', ')}. Try to fix definitions...`);
+      for(let missingDef of missingDefs) {
+        for(let fileName of bankerDefs) {
+          let splittedName = fileName.split('.');
+          if(missingDef == splittedName[0]) {
+            let source = path.join(bankerDefPath, fileName);
+            let destination = path.join(defPath, fileName);
+            mod.log(`Copy ${source} to ${destination}...`);
+            try {
+              fs.copyFileSync(source, destination);
+              restoredDefs.push(missingDef);
+              mod.log(`...succeeded.`);
+            } catch(err) {
+              mod.error(`...failed.`);
+            }
+          }
+        }
+      }
+      let leftMissing = missingDefs.filter(def => !restoredDefs.includes(def));
+      let leftMissingCount = leftMissing.length;
+      if(leftMissingCount > 0) {
+        needManualFix = true;
+        mod.error(`Still missing definition file${leftMissingCount > 1 ? 's' : ''} for ${
+          leftMissing.join(", ")}. Please check if all definition files from ${
+          bankerDefPath} are in ${defPath}. Copy the missing definiton files. `
+          + `If it still does not work, create a new issue on GitHub (${mod.info.supportUrl}).`
+        );
+      } else {
+        mod.log(`Successfully fixed missing definition files. Please restart Tera and Tera Toolbox to make the fix work.`);
+      }
     }
   }
 
