@@ -2,7 +2,7 @@
 
 Depositing items made easier.
 
-Banker removes the tedium of depositing commonly acquired items. It works by automatically storing inventory items that are also in your bank. Banker will not touch any inventory items that are not already in your bank. You can configure Banker to which bank type it is allowed to deposit (default is personal bank and pet bank) and if it should only use pockets, the main inventory or both (default is main only).
+Banker removes the tedium of depositing commonly acquired items. It works by automatically storing inventory items that are also in your bank. Banker will not touch any inventory items that are not already in your bank. You can configure the bank types Banker is allowed to deposit (default is personal bank and pet bank) and the inventory types (pockets, the main inventory, or both) Banker is allowed to take from(default is main only).
 
 ## Installation
 
